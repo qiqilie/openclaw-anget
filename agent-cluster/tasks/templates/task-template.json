@@ -1,0 +1,18 @@
+{
+  "id": "{{task_id}}",
+  "description": "",
+  "branch": "feature/{{task_id}}",
+  "worktree": "tasks/{{task_id}}",
+  "agent": null,
+  "model": null,
+  "status": "pending",
+  "priority": "medium",
+  "createdAt": null,
+  "startedAt": null,
+  "completedAt": null,
+  "retryCount": 0,
+  "errorMessage": null,
+  "commits": [],
+  "prUrl": null,
+  "notifyOnComplete": true
+}

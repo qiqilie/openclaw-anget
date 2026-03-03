@@ -1,0 +1,93 @@
+{
+  "agents": {
+    "codex": {
+      "name": "Codex",
+      "model": "gpt-5.3-codex",
+      "strengths": [
+        "后端逻辑",
+        "Node.js API",
+        "复杂 bug",
+        "多文件重构",
+        "数据库设计"
+      ],
+      "use_cases": [
+        "backend",
+        "api",
+        "bugfix",
+        "refactor",
+        "database",
+        "server"
+      ],
+      "priority": 90,
+      "speed": "slow",
+      "thoroughness": "high"
+    },
+    "claude-code": {
+      "name": "Claude Code",
+      "model": "claude-opus-4.5",
+      "strengths": [
+        "Vue3 前端",
+        "TypeScript",
+        "Pinia 状态管理",
+        "Vite 配置",
+        "git 操作"
+      ],
+      "use_cases": [
+        "frontend",
+        "vue",
+        "component",
+        "vite",
+        "pinia",
+        "ui",
+        "css"
+      ],
+      "priority": 50,
+      "speed": "fast",
+      "thoroughness": "medium"
+    },
+    "gemini": {
+      "name": "Gemini",
+      "model": "gemini-2.0",
+      "strengths": [
+        "UI 设计",
+        "设计审美",
+        "CSS/样式"
+      ],
+      "use_cases": [
+        "design",
+        "style",
+        "css",
+        "animation"
+      ],
+      "priority": 20,
+      "speed": "fast",
+      "thoroughness": "medium"
+    }
+  },
+  "project": {
+    "name": "openclaw-anget",
+    "stack": {
+      "frontend": "Vue3 + Vite + Pinia + TypeScript",
+      "backend": "Node.js"
+    },
+    "package_managers": ["pnpm", "npm", "yarn"],
+    "test_frameworks": ["vitest", "playwright"]
+  },
+  "selection_strategy": {
+    "default": "claude-code",
+    "rules": [
+      {
+        "if_contains": ["backend", "api", "server", "node", "database", "mysql", "mongodb"],
+        "select": "codex"
+      },
+      {
+        "if_contains": ["vue", "vite", "pinia", "frontend", "component", "page"],
+        "select": "claude-code"
+      },
+      {
+        "if_contains": ["design", "style", "css", "animation", "ui-design"],
+        "select": "gemini"
+      }
+    ]
+  }
+}
