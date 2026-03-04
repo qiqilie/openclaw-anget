@@ -43,52 +43,63 @@ cp agent-cluster/.env.example agent-cluster/.env
 
 ### 5. 创建第一个任务
 
-```bash
+```powershell
 cd agent-cluster
 
 # 创建新任务 (会自动创建 git worktree)
-./scripts/worktree-manager.sh create feat-new-feature
+.\scripts\worktree-manager.ps1 create feat-new-feature
 
 # 启动 Agent
-./scripts/agent-launcher.sh launch feat-new-feature
+.\scripts\agent-launcher.ps1 launch feat-new-feature
 ```
 
 ## 使用方法
 
 ### 任务管理
 
-```bash
+```powershell
 # 列出所有任务
-./scripts/worktree-manager.sh list
+.\scripts\worktree-manager.ps1 list
 
 # 创建任务
-./scripts/worktree-manager.sh create feat-user-login
+.\scripts\worktree-manager.ps1 create feat-user-login
 
 # 移除任务
-./scripts/worktree-manager.sh remove feat-user-login
+.\scripts\worktree-manager.ps1 remove feat-user-login
 ```
 
 ### Agent 控制
 
-```bash
+```powershell
 # 启动 Agent (会自动选择合适的类型)
-./scripts/agent-launcher.sh launch <task_id>
+.\scripts\agent-launcher.ps1 launch <task_id>
 
-# 发送消息给 Agent
-./scripts/agent-launcher.sh send <task_id> "停一下，先做API层"
+# 指定 Agent 类型
+.\scripts\agent-launcher.ps1 launch <task_id> codex        # 后端
+.\scripts\agent-launcher.ps1 launch <task_id> claude-code  # 前端
+.\scripts\agent-launcher.ps1 launch <task_id> gemini        # UI 设计
+
+# 列出运行中的 Agents
+.\scripts\agent-launcher.ps1 list
 
 # 查看 Agent 输出
-tmux attach -t agent-<task_id>
+Get-Job -Name "agent-<task_id>" | Receive-Job
 ```
 
 ### 监控
 
-```bash
+```powershell
 # 手动检查任务状态
-./scripts/monitor.sh check
+.\scripts\monitor.ps1
 
-# 设置 cron 任务 (每 10 分钟检查)
-*/10 * * * * cd /path/to/agent-cluster && ./scripts/monitor.sh
+# 检查并重试失败任务
+.\scripts\monitor.ps1 retry
+
+# 清理旧任务
+.\scripts\monitor.ps1 clean
+
+# 设置定时监控 (每 10 分钟)
+while($true) { .\monitor.ps1; Start-Sleep -Seconds 600 }
 ```
 
 ## Agent 选择策略
@@ -123,12 +134,12 @@ tmux attach -t agent-<task_id>
     │
     ▼
 ┌─────────────────┐
-│  启动 Agent    │ ◄── Codex/Claude/Gemini
+│  启动 Agent    │ ◄── PowerShell 后台作业
 └─────────────────┘
     │
     ▼
 ┌─────────────────┐
-│  监控进度       │ ◄── cron 检查 + 自动重试
+│  监控进度       │ ◄── monitor.ps1 检查
 └─────────────────┘
     │
     ▼
@@ -166,7 +177,10 @@ openclaw-anget/
 │   │   └── routes/
 │   └── package.json
 └── agent-cluster/            # Agent 集群系统
-    ├── scripts/              # 管理脚本
+    ├── scripts/              # 管理脚本 (PowerShell)
+    │   ├── worktree-manager.ps1
+    │   ├── agent-launcher.ps1
+    │   └── monitor.ps1
     ├── config/               # 配置文件
     ├── tasks/                # 任务记录
     └── logs/                 # 日志
@@ -174,6 +188,7 @@ openclaw-anget/
 
 ## 注意事项
 
-1. **内存限制**: 每个 Agent 需要独立环境，16GB RAM 最多同时跑 4-5 个
-2. **安全边界**: Agent 只能访问自己的 worktree，不能接触生产数据
-3. **人工 Review**: 所有 PR 需要人工审核后才能合并
+1. **PowerShell**: 这些脚本使用 PowerShell，不需要 WSL 或 tmux
+2. **内存限制**: 每个 Agent 需要独立环境，16GB RAM 最多同时跑 4-5 个
+3. **安全边界**: Agent 只能访问自己的 worktree，不能接触生产数据
+4. **人工 Review**: 所有 PR 需要人工审核后才能合并
